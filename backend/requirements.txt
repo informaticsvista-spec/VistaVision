@@ -1,0 +1,9 @@
+# VistaVision backend runtime dependencies.
+# Tested with Python 3.13 on Linux. Python 3.10 - 3.13 should work.
+fastapi==0.115.6
+uvicorn==0.54.0
+python-multipart==0.0.32
+numpy>=1.26,<3
+opencv-python-headless==4.10.0.84
+onnxruntime==1.29.0
+pillow>=10.3
