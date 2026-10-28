@@ -4,6 +4,7 @@ import { useAnalytics } from "../analytics/AnalyticsProvider";
 import { downloadReport, exportCsv } from "../lib/exports";
 import { cx } from "../lib/format";
 import { useCamera } from "../hooks/useCamera";
+import { InstitutionLogos } from "./InstitutionLogos";
 import { Logo } from "./Logo";
 import { Badge } from "./ui";
 
@@ -47,21 +48,22 @@ export default function Layout() {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
       <header className="sticky top-0 z-40 bg-gradient-to-r from-indigo-700 via-indigo-600 to-cyan-500 text-white shadow-lg">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="VistaVision home" onClick={() => setOpen(false)}>
-            <Logo size={42} bare />
-            <span className="text-lg font-extrabold tracking-tight">Vista<span className="text-sun-300">Vision</span></span>
+          <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="VistaVision home" onClick={() => setOpen(false)}>
+            <Logo size={38} bare />
+            <span className="hidden text-lg font-extrabold tracking-tight min-[420px]:inline">Vista<span className="text-sun-300">Vision</span></span>
           </Link>
-          <nav aria-label="Main" className="ml-6 hidden items-center gap-1 lg:flex">
+          <nav aria-label="Main" className="ml-6 hidden items-center gap-1 whitespace-nowrap xl:flex">
             {NAV.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cx("rounded-lg px-3 py-2 text-sm font-semibold transition", isActive ? "bg-white text-indigo-700" : "text-white/90 hover:bg-white/10 hover:text-white")}>{n.label}</NavLink>
             ))}
           </nav>
-          <button className="ml-auto inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg hover:bg-white/10 lg:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
+          <InstitutionLogos height={26} className="ml-auto !gap-2 !px-2 !py-1 sm:!gap-3 sm:!px-3 sm:!py-1.5 [&_img]:sm:!h-[32px]" />
+          <button className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg hover:bg-white/10 xl:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>{open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}</svg>
           </button>
         </div>
         {open && (
-          <nav id="mobile-nav" aria-label="Main (mobile)" className="border-t border-white/10 px-4 pb-3 lg:hidden">
+          <nav id="mobile-nav" aria-label="Main (mobile)" className="border-t border-white/10 px-4 pb-3 xl:hidden">
             {NAV.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} onClick={() => setOpen(false)} className={({ isActive }) => cx("block rounded-lg px-3 py-3 text-base font-semibold", isActive ? "bg-white/15" : "text-white/80")}>{n.label}</NavLink>
             ))}

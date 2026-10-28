@@ -42,7 +42,7 @@ export default function Home() {
             <div className={cx("rounded-[2.5rem] bg-white/15 p-6 shadow-2xl shadow-black/25 ring-2 ring-white/40 backdrop-blur", motionOk && "animate-floaty")}>
               <Logo size={220} rounded="rounded-[2rem]" />
             </div>
-            {[["😀", "-left-2 top-2", "bg-sun-400"], ["🔢", "-right-2 top-12", "bg-mint-400"], ["🍎", "left-0 bottom-6", "bg-coral-400"], ["📊", "right-2 bottom-2", "bg-sky-400"]].map(([e, pos, bg], i) => (
+            {[["😀", "left-0 top-2 sm:-left-2", "bg-sun-400"], ["🔢", "right-0 top-12 sm:-right-2", "bg-mint-400"], ["🍎", "left-0 bottom-6", "bg-coral-400"], ["📊", "right-2 bottom-2", "bg-sky-400"]].map(([e, pos, bg], i) => (
               <span key={e} aria-hidden className={cx("absolute flex h-14 w-14 items-center justify-center rounded-2xl text-3xl shadow-lg ring-2 ring-white/60", pos, bg, motionOk && "animate-wiggle")} style={{ animationDelay: `${i * 0.4}s` }}>{e}</span>
             ))}
             <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2.5rem]" aria-hidden>
@@ -79,7 +79,7 @@ export default function Home() {
             <div key={t} className="rounded-2xl border-2 border-indigo-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-cyan-300"><p className="font-bold">{t}</p><p className="mt-1 text-navy-700">{d}</p></div>
           ))}
         </div>
-        <div className="mt-6 flex items-center justify-center gap-3 text-xs text-navy-700"><InstitutionLogos height={30} /> <span>VistaVision · Department of Informatics · Periyar Maniammai Institute of Science &amp; Technology</span></div>
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center text-xs text-navy-700 sm:flex-row sm:text-left"><InstitutionLogos height={34} className="shrink-0" /> <span className="max-w-md">VistaVision · Department of Informatics · Periyar Maniammai Institute of Science &amp; Technology</span></div>
       </section>
     </div>
   );

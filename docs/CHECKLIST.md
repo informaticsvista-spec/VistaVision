@@ -41,7 +41,7 @@ Legend: ✅ verified in development (automated or headless-browser) · ⚠️ im
 
 ## Deployment
 - ✅ API serves built web app (`VISTA_FRONTEND_DIST`), SPA fallback, /api 404 guard
-- ❌ Docker image not built here (no Docker daemon); ❌ not deployed yet. Free deployment steps for Hugging Face Spaces: `docs/DEPLOY_FREE.md`. Test the live link on a phone.
+- ❌ Docker image not built here (no Docker daemon); ✅ deployed by the owner on Vercel + Render (API health check verified). Free deployment (Vercel frontend + Render backend): `docs/DEPLOY_FREE.md`. Test the live link on a phone.
 - ⚠️ CORS: set `VISTA_CORS_ORIGINS` when frontend and backend are on different hosts
 
 ## Privacy
