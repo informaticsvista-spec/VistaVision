@@ -8,7 +8,7 @@ COPY frontend ./
 RUN npm run build
 
 FROM python:3.12-slim
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 VISTA_FRONTEND_DIST=/srv/dist PORT=7860
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 VISTA_FRONTEND_DIST=/srv/dist VISTA_DB_PATH=/srv/data/vistavision.db PORT=7860
 RUN apt-get update && apt-get install -y --no-install-recommends libglib2.0-0 libgomp1 && rm -rf /var/lib/apt/lists/*
 WORKDIR /srv
 COPY backend/requirements.txt .
@@ -16,8 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/app ./app
 RUN python -m app.models.download
 COPY --from=web /web/dist ./dist
-# Hugging Face Spaces runs containers as user 1000; the files above are world-readable, nothing is written at run time.
-RUN useradd -m -u 1000 user
+# Hugging Face Spaces runs containers as user 1000; the files above are world-readable, the only thing written at run time is the SQLite record database in /srv/data.
+RUN useradd -m -u 1000 user && mkdir -p /srv/data && chown user /srv/data
 USER user
 EXPOSE 7860
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860}"]

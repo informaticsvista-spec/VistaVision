@@ -1,6 +1,40 @@
 // Shared types: the analytics event model and the backend API responses.
 
-export type Activity = "face" | "digit" | "object" | "other";
+export type Activity = "face" | "digit" | "object" | "other" | "rps" | "counter";
+
+export type RpsMove = "rock" | "paper" | "scissors";
+/** Result from the player's point of view. */
+export type RpsResult = "win" | "lose" | "draw";
+
+/** Details stored on a Rock-Paper-Scissors round event. Every value comes from a completed round. */
+export interface RpsDetail {
+  round: number;
+  gameId: string;
+  sessionId: string;
+  player: RpsMove;
+  ai: RpsMove;
+  result: RpsResult;
+  playerWins: number;
+  aiWins: number;
+  draws: number;
+  streak: number;
+  bestStreak: number;
+}
+
+/** Details stored on a Human Counter round event. */
+export interface CounterDetail {
+  round: number;
+  gameId: string;
+  sessionId: string;
+  guess: number;
+  detected: number;
+  correct: boolean;
+  /** Mean face-detector score (0..1) for the detected faces; undefined when no faces were found. */
+  quality?: number;
+  correctCount: number;
+  streak: number;
+  bestStreak: number;
+}
 /** Where the data came from. Kept on every record so charts can always separate real AI output from typed-in or sample data. */
 export type Origin = "ai" | "manual" | "sample";
 export type InputSource = "webcam" | "upload" | "paper-camera" | "touch-canvas" | "manual" | "sample";
@@ -26,6 +60,9 @@ export interface VistaEvent {
   trackedIds?: number[];
   /** Manual records: free-text source type, e.g. "Classroom observation". */
   sourceNote?: string;
+  /** Game rounds only. */
+  rps?: RpsDetail;
+  counter?: CounterDetail;
 }
 
 export interface Box {
@@ -113,6 +150,8 @@ export interface Settings {
   sound: boolean;
   reduceMotion: boolean;
   persistData: boolean;
+  /** Save the structured records (never images) in the server database so they survive a page refresh. */
+  serverSave: boolean;
   maxUploadMb: number;
 }
 

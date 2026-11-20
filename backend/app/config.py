@@ -42,6 +42,10 @@ class Settings:
     frontend_dist: Path | None = field(
         default_factory=lambda: Path(os.environ["VISTA_FRONTEND_DIST"]) if os.environ.get("VISTA_FRONTEND_DIST") else None
     )
+    # SQLite file for saved analytics records (labels, counts, game rounds; never images).
+    # On hosts with a temporary disk (e.g. Render's free plan) it is wiped whenever the service restarts or redeploys;
+    # mount a persistent disk and point this at it to keep records for good.
+    db_path: Path = field(default_factory=lambda: Path(os.environ.get("VISTA_DB_PATH", Path(__file__).parent.parent / "data" / "vistavision.db")))
     # onnxruntime intra-op threads. 0 lets the runtime decide.
     ort_threads: int = field(default_factory=lambda: int(os.environ.get("VISTA_ORT_THREADS", "0")))
 

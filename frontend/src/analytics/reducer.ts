@@ -19,7 +19,8 @@ export type Action =
   | { type: "reset" }
   | { type: "addFeedback"; feedback: Feedback }
   | { type: "setPaused"; paused: boolean }
-  | { type: "hydrate"; events: VistaEvent[] };
+  | { type: "hydrate"; events: VistaEvent[] }
+  | { type: "merge"; events: VistaEvent[]; feedback: Feedback[] };
 
 export const initialState = (): AnalyticsState => ({ events: [], feedback: [], paused: false, sessionId: uid(), sessionStart: new Date().toISOString() });
 
@@ -62,6 +63,15 @@ export function reducer(state: AnalyticsState, action: Action): AnalyticsState {
       return initialState();
     case "setPaused":
       return { ...state, paused: action.paused };
+    case "merge": {
+      // Records loaded from the server: add what is missing, never duplicate, never overwrite what is on screen.
+      const events = dedupe(state.events, action.events);
+      const have = new Set(state.feedback.map((f) => f.id));
+      const feedback = action.feedback.filter((f) => !have.has(f.id) && have.add(f.id));
+      return events.length || feedback.length
+        ? { ...state, events: [...events, ...state.events].sort((a, b) => a.timestamp.localeCompare(b.timestamp)), feedback: [...state.feedback, ...feedback] }
+        : state;
+    }
     case "hydrate":
       return { ...state, events: dedupe([], action.events) };
   }

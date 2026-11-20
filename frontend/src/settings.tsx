@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: true,
   reduceMotion: false,
   persistData: false,
+  serverSave: true,
   maxUploadMb: 8,
 };
 

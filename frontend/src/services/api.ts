@@ -1,5 +1,5 @@
 // Thin, typed client for the VistaVision backend with timeouts and friendly errors.
-import type { DigitResponse, FaceResponse, HealthResponse, ObjectResponse } from "../types";
+import type { Feedback, VistaEvent, DigitResponse, FaceResponse, HealthResponse, ObjectResponse } from "../types";
 
 let baseUrl: string = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "";
 
@@ -86,6 +86,19 @@ export const api = {
 
   detectObjects: (blob: Blob, p: { minScore?: number } = {}, options?: RequestOptions) =>
     request<ObjectResponse>(`/api/objects/detect${query({ min_score: p.minScore ?? 0.4 })}`, { method: "POST", body: imageForm(blob) }, { timeoutMs: 15000, ...options }),
+
+  storeLoad: (clientId: string, options?: RequestOptions) =>
+    request<{ events: VistaEvent[]; feedback: Feedback[] }>(`/api/store/${clientId}`, { method: "GET" }, { timeoutMs: 15000, ...options }),
+
+  storeSync: (clientId: string, body: { upserts: unknown[]; deletes: unknown[] }, options?: RequestOptions) =>
+    request<{ stored: number; ignored: number; removed: number; total: number }>(
+      `/api/store/${clientId}/sync`,
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
+      { timeoutMs: 20000, ...options },
+    ),
+
+  storeWipe: (clientId: string, options?: RequestOptions) =>
+    request<{ removed: number }>(`/api/store/${clientId}`, { method: "DELETE" }, { timeoutMs: 15000, ...options }),
 
   objectLabels: (options?: RequestOptions) => request<{ count: number; labels: string[] }>("/api/objects/labels", { method: "GET" }, { timeoutMs: 8000, ...options }),
 };

@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import __version__
 from app.config import settings
 from app.errors import install_error_handlers
-from app.routes import digits, faces, health, objects
+from app.routes import digits, faces, health, objects, store
 
 
 def _warm_up() -> None:
@@ -31,6 +31,10 @@ def _warm_up() -> None:
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     threading.Thread(target=_warm_up, name="model-warmup", daemon=True).start()
+    try:
+        store.get_store().prune(days=90)  # forget workspaces nobody has opened for 90 days
+    except Exception:  # noqa: BLE001 - housekeeping must never stop the server
+        logging.getLogger("vistavision").exception("could not prune old records")
     yield
 
 
@@ -46,12 +50,12 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_origin_regex=settings.cors_origin_regex,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "DELETE"],
         allow_headers=["*"],
         max_age=600,
     )
     install_error_handlers(app)
-    for router in (health.router, faces.router, digits.router, objects.router):
+    for router in (health.router, faces.router, digits.router, objects.router, store.router):
         app.include_router(router, prefix="/api")
     _mount_frontend(app)
     return app
